@@ -6,7 +6,7 @@ export const BAD_REQUEST = {
 
 export const INTERNAL_SERVER_ERROR = {
   code: 500,
-  message: "ошибка по умолчанию",
+  message: "На сервере произошла ошибка",
 };
 
 export const NOT_FOUND_REQUEST = {
