@@ -36,14 +36,26 @@ export const postCard = (
     });
 };
 
-export const deleteCard = (req: Request, res: Response, next: NextFunction) => {
-  Card.findByIdAndRemove(req.params.cardId)
+export const deleteCard = (
+  req: CustomRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  const userId = req.user?._id;
+  Card.findById(req.params.cardId)
     .then((card) => {
       if (!card) {
         throw Errors.notFoundRequest();
       }
+      if (card.owner.toString() !== userId) {
+        throw Errors.forbiddenError();
+      }
+      return Card.findByIdAndRemove(req.params.cardId);
+    })
+    .then((card) => {
       res.send({
         message: "Карточка удалена",
+        data: card,
       });
     })
     .catch((err) => {
@@ -100,8 +112,8 @@ export const dislikeCard = (
       }
       res.send(
         // card
-        {message: "Лайк удален"}
-        );
+        { message: "Лайк удален" }
+      );
     })
     .catch((err) => {
       if (err.name === "CastError") {
@@ -111,4 +123,3 @@ export const dislikeCard = (
       }
     });
 };
-

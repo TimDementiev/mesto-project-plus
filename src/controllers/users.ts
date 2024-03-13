@@ -2,6 +2,8 @@ import { Request, Response, NextFunction } from "express";
 import User from "../models/user";
 import Errors from "../errors/errors";
 import { CustomRequest } from "../utils/interfaces";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 export const getAllUsers = (
   req: Request,
@@ -15,11 +17,12 @@ export const getAllUsers = (
 };
 
 export const getUserById = (
-  req: Request,
+  req: CustomRequest,
   res: Response,
   next: NextFunction
 ) => {
-  User.findById(req.params.userId)
+  const { userId } = req.params;
+  User.findById(userId)
     .select("-__v")
     .then((user) => {
       res.send(user);
@@ -33,15 +36,30 @@ export const getUserById = (
     });
 };
 
-export const postUser = (req: Request, res: Response, next: NextFunction) => {
-  const { name, about, avatar } = req.body;
-  User.create({ name, about, avatar })
-    .then((user) => {
-      res.send({
+export const postUser = (
+  req: CustomRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  const { name, about, avatar, email } = req.body;
+  bcrypt
+    .hash(req.body.password, 10)
+    .then((hash: string) =>
+      User.create({
         name,
         about,
         avatar,
+        email,
+        password: hash,
+      })
+    )
+    .then((user) => {
+      res.send({
         _id: user._id,
+        name: user.name,
+        about: user.about,
+        avatar: user.avatar,
+        email: user.email,
       });
     })
     .catch((err) => {
@@ -59,10 +77,10 @@ export const patchUser = (
   next: NextFunction
 ) => {
   const _id = req.user?._id;
-  const { name, about, avatar } = req.body;
+  const { name, about } = req.body;
   User.findOneAndUpdate(
     { _id },
-    { name, about, avatar },
+    { name, about },
     {
       new: true,
       runValidators: true,
@@ -109,6 +127,38 @@ export const patchUserAvatar = (
     .catch((err) => {
       if (err.name === "ValidationError") {
         next(Errors.badRequest());
+      } else {
+        next(err);
+      }
+    });
+};
+
+export const login = (req: Request, res: Response, next: NextFunction) => {
+  const { email, password } = req.body;
+  User.findUserByCredentials(email, password)
+    .then((user) => {
+      const token = jwt.sign({ _id: user._id }, 'super-secret', {
+        expiresIn: '3d',
+      });
+      res.cookie('token', token, { httpOnly: true });
+      res.send({ message: 'Успешная авторизация' });
+    })
+    .catch(next);
+};
+
+export const getCurrentUser = (req: CustomRequest, res: Response, next: NextFunction) => {
+  const _id = req.user?._id;
+  User.findById(_id)
+    .select('-__v')
+    .then((user) => {
+      if (!user) {
+        throw Errors.notFoundRequest();
+      }
+      res.send(user);
+    })
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        next(Errors.invalidId());
       } else {
         next(err);
       }

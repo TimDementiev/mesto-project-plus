@@ -1,4 +1,12 @@
-import { BAD_REQUEST, NOT_FOUND_REQUEST, NOT_FOUND_PAGE } from '../constants/errors';
+import {
+  BAD_REQUEST,
+  NOT_FOUND_REQUEST,
+  NOT_FOUND_PAGE,
+  INVALID_ID_ERROR,
+  AUTHORIZATION_ERROR,
+  UNAURHORIZATION_ERROR,
+  FORBIDDEN_ERROR,
+} from "../constants/errors";
 
 class Errors extends Error {
   status: number;
@@ -18,6 +26,25 @@ class Errors extends Error {
 
   static notFoundPage() {
     return new Errors(NOT_FOUND_PAGE.code, NOT_FOUND_PAGE.message);
+  }
+
+  static invalidId() {
+    return new Errors(INVALID_ID_ERROR.code, INVALID_ID_ERROR.message);
+  }
+
+  static authorizationError() {
+    return new Errors(AUTHORIZATION_ERROR.code, AUTHORIZATION_ERROR.message);
+  }
+
+  static unauthorizationError() {
+    return new Errors(
+      UNAURHORIZATION_ERROR.code,
+      UNAURHORIZATION_ERROR.message
+    );
+  }
+
+  static forbiddenError() {
+    return new Errors(FORBIDDEN_ERROR.code, FORBIDDEN_ERROR.message);
   }
 }
 

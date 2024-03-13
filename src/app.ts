@@ -2,8 +2,9 @@ import express from "express";
 import { Response, NextFunction, Request } from "express";
 import mongoose from "mongoose";
 import router from "./routes/index";
-
+import env from '../config';
 import { pageError, serverErorr } from "./middlewares/error";
+import { errors } from 'celebrate';
 
 export interface AuthRequest extends Request {
   user?: {
@@ -12,9 +13,8 @@ export interface AuthRequest extends Request {
 }
 
 const app = express();
-const { PORT = 3000 } = process.env;
 
-mongoose.connect("mongodb://127.0.0.1:27017/mestodb");
+mongoose.connect(env.MONGO_URL);
 
 app.use(express.json());
 
@@ -28,5 +28,6 @@ app.use((req: AuthRequest, res: Response, next: NextFunction) => {
 
 app.use("/", router);
 app.use(pageError);
+app.use(errors());
 app.use(serverErorr);
-app.listen(PORT, () => console.log(`App listening on port ${PORT}`));
+app.listen(env.PORT, () => console.log(`App listening on port ${env.PORT}`));
