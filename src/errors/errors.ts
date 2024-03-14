@@ -1,4 +1,4 @@
-import { BAD_REQUEST, NOT_FOUND_REQUEST, NOT_FOUND_PAGE } from '../constants/errors';
+import { ERROR } from '../constants/errors';
 
 class Errors extends Error {
   status: number;
@@ -8,16 +8,24 @@ class Errors extends Error {
     this.status = status;
   }
 
-  static badRequest() {
-    return new Errors(BAD_REQUEST.code, BAD_REQUEST.message);
+  static badRequest(message: string) {
+    return new Errors(ERROR.code.BAD_REQUEST, message);
   }
 
-  static notFoundRequest() {
-    return new Errors(NOT_FOUND_REQUEST.code, NOT_FOUND_REQUEST.message);
+  static authorizationError(message: string) {
+    return new Errors(ERROR.code.AUTHORIZATION, message);
   }
 
-  static notFoundPage() {
-    return new Errors(NOT_FOUND_PAGE.code, NOT_FOUND_PAGE.message);
+  static forbiddenError() {
+    return new Errors(ERROR.code.FORBIDDEN, ERROR.message.FORBIDDEN_ERROR);
+  }
+
+  static notFound(message: string) {
+    return new Errors(ERROR.code.NOT_FOUND, message);
+  }
+
+  static conflictError() {
+    return new Errors(ERROR.code.CONFLICT, ERROR.message.CONFLICT_ERROR);
   }
 }
 
