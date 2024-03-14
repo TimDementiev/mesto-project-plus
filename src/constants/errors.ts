@@ -4,9 +4,24 @@ export const BAD_REQUEST = {
     "переданы некорректные данные в методы создания карточки, пользователя, обновления аватара пользователя или профиля",
 };
 
-export const INTERNAL_SERVER_ERROR = {
-  code: 500,
-  message: "На сервере произошла ошибка",
+export const INVALID_ID_ERROR = {
+  code: 400,
+  message: "Передан невалидный id",
+};
+
+export const AUTHORIZATION_ERROR = {
+  code: 401,
+  message: "Неправильные почта или пароль",
+};
+
+export const UNAURHORIZATION_ERROR = {
+  code: 401,
+  message: "Необходима авторизация",
+};
+
+export const FORBIDDEN_ERROR = {
+  code: 403,
+  message: "Недостаточно прав",
 };
 
 export const NOT_FOUND_REQUEST = {
@@ -19,22 +34,12 @@ export const NOT_FOUND_PAGE = {
   message: "страница не найдена",
 };
 
-export const INVALID_ID_ERROR = {
-  code: 400,
-  message: 'Передан невалидный id',
+export const CONFLICT_ERROR = {
+  code: 409,
+  message: "Пользователь с такой почтой уже существует",
 };
 
-export const AUTHORIZATION_ERROR = {
-  code: 401,
-  message: 'Неправильные почта или пароль',
-};
-
-export const UNAURHORIZATION_ERROR = {
-  code: 401,
-  message: 'Необходима авторизация',
-};
-
-export const FORBIDDEN_ERROR = {
-  code: 403,
-  message: 'Недостаточно прав',
+export const INTERNAL_SERVER_ERROR = {
+  code: 500,
+  message: "На сервере произошла ошибка",
 };

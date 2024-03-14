@@ -6,6 +6,7 @@ import {
   AUTHORIZATION_ERROR,
   UNAURHORIZATION_ERROR,
   FORBIDDEN_ERROR,
+  CONFLICT_ERROR,
 } from "../constants/errors";
 
 class Errors extends Error {
@@ -45,6 +46,10 @@ class Errors extends Error {
 
   static forbiddenError() {
     return new Errors(FORBIDDEN_ERROR.code, FORBIDDEN_ERROR.message);
+  }
+
+  static conflictError() {
+    return new Errors(CONFLICT_ERROR.code, CONFLICT_ERROR.message);
   }
 }
 

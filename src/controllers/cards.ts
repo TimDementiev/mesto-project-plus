@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import Errors from "../errors/errors";
 import Card from "../models/card";
-import { CustomRequest } from "../utils/interfaces";
+import { AuthRequest } from '../middlewares/auth';
 
 export const getCards = (req: Request, res: Response, next: NextFunction) => {
   Card.find({})
@@ -13,7 +13,7 @@ export const getCards = (req: Request, res: Response, next: NextFunction) => {
 };
 
 export const postCard = (
-  req: CustomRequest,
+  req: AuthRequest,
   res: Response,
   next: NextFunction
 ) => {
@@ -37,7 +37,7 @@ export const postCard = (
 };
 
 export const deleteCard = (
-  req: CustomRequest,
+  req: AuthRequest,
   res: Response,
   next: NextFunction
 ) => {
@@ -68,7 +68,7 @@ export const deleteCard = (
 };
 
 export const likeCard = (
-  req: CustomRequest,
+  req: AuthRequest,
   res: Response,
   next: NextFunction
 ) => {
@@ -96,7 +96,7 @@ export const likeCard = (
 };
 
 export const dislikeCard = (
-  req: CustomRequest,
+  req: AuthRequest,
   res: Response,
   next: NextFunction
 ) => {
