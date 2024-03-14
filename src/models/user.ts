@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import validator from "validator";
 import bcrypt from "bcrypt";
 import Errors from "../errors/errors";
+import { ERROR } from '../constants/errors';
 
 interface IUser {
   name: string;
@@ -27,7 +28,6 @@ const userSchema = new mongoose.Schema<IUser>({
   avatar: {
     type: String,
     match: /^https?:\/\/.+/,
-    required: true,
     default:
       "https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png",
   },
@@ -66,11 +66,11 @@ userSchema.static(
       .select("+password")
       .then((user: { password: string }) => {
         if (!user) {
-          return Promise.reject(Errors.authorizationError());
+          return Promise.reject(Errors.authorizationError(ERROR.message.AUTHORIZATION_ERROR));
         }
         return bcrypt.compare(password, user.password).then((matched) => {
           if (!matched) {
-            return Promise.reject(Errors.authorizationError());
+            return Promise.reject(Errors.authorizationError(ERROR.message.AUTHORIZATION_ERROR));
           }
           return user;
         });

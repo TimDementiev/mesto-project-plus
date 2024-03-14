@@ -1,13 +1,4 @@
-import {
-  BAD_REQUEST,
-  NOT_FOUND_REQUEST,
-  NOT_FOUND_PAGE,
-  INVALID_ID_ERROR,
-  AUTHORIZATION_ERROR,
-  UNAURHORIZATION_ERROR,
-  FORBIDDEN_ERROR,
-  CONFLICT_ERROR,
-} from "../constants/errors";
+import { ERROR } from '../constants/errors';
 
 class Errors extends Error {
   status: number;
@@ -17,39 +8,24 @@ class Errors extends Error {
     this.status = status;
   }
 
-  static badRequest() {
-    return new Errors(BAD_REQUEST.code, BAD_REQUEST.message);
+  static badRequest(message: string) {
+    return new Errors(ERROR.code.BAD_REQUEST, message);
   }
 
-  static notFoundRequest() {
-    return new Errors(NOT_FOUND_REQUEST.code, NOT_FOUND_REQUEST.message);
-  }
-
-  static notFoundPage() {
-    return new Errors(NOT_FOUND_PAGE.code, NOT_FOUND_PAGE.message);
-  }
-
-  static invalidId() {
-    return new Errors(INVALID_ID_ERROR.code, INVALID_ID_ERROR.message);
-  }
-
-  static authorizationError() {
-    return new Errors(AUTHORIZATION_ERROR.code, AUTHORIZATION_ERROR.message);
-  }
-
-  static unauthorizationError() {
-    return new Errors(
-      UNAURHORIZATION_ERROR.code,
-      UNAURHORIZATION_ERROR.message
-    );
+  static authorizationError(message: string) {
+    return new Errors(ERROR.code.AUTHORIZATION, message);
   }
 
   static forbiddenError() {
-    return new Errors(FORBIDDEN_ERROR.code, FORBIDDEN_ERROR.message);
+    return new Errors(ERROR.code.FORBIDDEN, ERROR.message.FORBIDDEN_ERROR);
+  }
+
+  static notFound(message: string) {
+    return new Errors(ERROR.code.NOT_FOUND, message);
   }
 
   static conflictError() {
-    return new Errors(CONFLICT_ERROR.code, CONFLICT_ERROR.message);
+    return new Errors(ERROR.code.CONFLICT, ERROR.message.CONFLICT_ERROR);
   }
 }
 

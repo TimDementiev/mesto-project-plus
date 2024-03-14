@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import Errors from "../errors/errors";
 import Card from "../models/card";
 import { AuthRequest } from '../middlewares/auth';
+import { ERROR } from '../constants/errors';
 
 export const getCards = (req: Request, res: Response, next: NextFunction) => {
   Card.find({})
@@ -29,7 +30,7 @@ export const postCard = (
     })
     .catch((err) => {
       if (err.name === "ValidationError") {
-        next(Errors.badRequest());
+        next(Errors.badRequest(ERROR.message.BAD_REQUEST));
       } else {
         next(err);
       }
@@ -45,7 +46,7 @@ export const deleteCard = (
   Card.findById(req.params.cardId)
     .then((card) => {
       if (!card) {
-        throw Errors.notFoundRequest();
+        throw Errors.notFound(ERROR.message.NOT_FOUND_REQUEST);
       }
       if (card.owner.toString() !== userId) {
         throw Errors.forbiddenError();
@@ -60,7 +61,7 @@ export const deleteCard = (
     })
     .catch((err) => {
       if (err.name === "CastError") {
-        next(Errors.notFoundRequest());
+        next(Errors.badRequest(ERROR.message.INVALID_ID_ERROR));
       } else {
         next(err);
       }
@@ -80,7 +81,7 @@ export const likeCard = (
   )
     .then((card) => {
       if (!card) {
-        throw Errors.notFoundRequest();
+        throw Errors.notFound(ERROR.message.NOT_FOUND_REQUEST);
       }
       res.send({
         message: "Лайк поставлен",
@@ -88,7 +89,7 @@ export const likeCard = (
     })
     .catch((err) => {
       if (err.name === "CastError") {
-        next(Errors.badRequest());
+        next(Errors.badRequest(ERROR.message.INVALID_ID_ERROR));
       } else {
         next(err);
       }
@@ -108,7 +109,7 @@ export const dislikeCard = (
   )
     .then((card) => {
       if (!card) {
-        throw Errors.notFoundRequest();
+        throw Errors.notFound(ERROR.message.NOT_FOUND_REQUEST);
       }
       res.send(
         // card
@@ -117,7 +118,7 @@ export const dislikeCard = (
     })
     .catch((err) => {
       if (err.name === "CastError") {
-        next(Errors.badRequest());
+        next(Errors.badRequest(ERROR.message.INVALID_ID_ERROR));
       } else {
         next(err);
       }

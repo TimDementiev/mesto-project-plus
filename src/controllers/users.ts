@@ -4,9 +4,11 @@ import Errors from "../errors/errors";
 import { AuthRequest } from "../middlewares/auth";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { ERROR } from '../constants/errors';
+import env from '../../config';
 
 export const getAllUsers = (
-  req: Request,
+  req: AuthRequest,
   res: Response,
   next: NextFunction
 ) => {
@@ -16,28 +18,27 @@ export const getAllUsers = (
     .catch(next);
 };
 
-export const getUserById = (
-  req: AuthRequest,
-  res: Response,
-  next: NextFunction
-) => {
+export const getUserById = (req: AuthRequest, res: Response, next: NextFunction) => {
   const { userId } = req.params;
   User.findById(userId)
-    .select("-__v")
+    .select('-__v')
     .then((user) => {
+      if (!user) {
+        throw Errors.notFound(ERROR.message.NOT_FOUND_REQUEST);
+      }
       res.send(user);
     })
     .catch((err) => {
-      if (err.name === "CastError") {
-        next(Errors.notFoundRequest());
+      if (err.name === 'CastError') {
+        next(Errors.badRequest(ERROR.message.INVALID_ID_ERROR));
       } else {
         next(err);
       }
     });
 };
 
-export const postUser = (
-  req: AuthRequest,
+export const createUser = (
+  req: Request,
   res: Response,
   next: NextFunction
 ) => {
@@ -64,7 +65,7 @@ export const postUser = (
     })
     .catch((err) => {
       if (err.name === "ValidationError") {
-        next(Errors.badRequest());
+        next(Errors.badRequest(ERROR.message.BAD_REQUEST));
       } else if (err.code === 11000) {
         next(Errors.conflictError());
       } else {
@@ -91,13 +92,13 @@ export const patchUser = (
     .select("-__v")
     .then((user) => {
       if (!user) {
-        throw Errors.notFoundRequest();
+        throw Errors.notFound(ERROR.message.NOT_FOUND_REQUEST);
       }
       res.send(user);
     })
     .catch((err) => {
       if (err.name === "ValidationError") {
-        next(Errors.badRequest());
+        next(Errors.badRequest(ERROR.message.BAD_REQUEST));
       } else {
         next(err);
       }
@@ -122,13 +123,13 @@ export const patchUserAvatar = (
     .select("-__v")
     .then((user) => {
       if (!user) {
-        throw Errors.notFoundRequest();
+        throw Errors.notFound(ERROR.message.NOT_FOUND_REQUEST);
       }
       res.send(user);
     })
     .catch((err) => {
       if (err.name === "ValidationError") {
-        next(Errors.badRequest());
+        next(Errors.badRequest(ERROR.message.BAD_REQUEST));
       } else {
         next(err);
       }
@@ -139,11 +140,12 @@ export const login = (req: Request, res: Response, next: NextFunction) => {
   const { email, password } = req.body;
   User.findUserByCredentials(email, password)
     .then((user) => {
-      const token = jwt.sign({ _id: user._id }, "super-secret", {
-        expiresIn: "3d",
+      const token = jwt.sign({ _id: user._id }, env.JWT_SECRET, {
+        expiresIn: "7d",
       });
       res.cookie("token", token, { httpOnly: true });
       res.send({ message: "Успешная авторизация" });
+      // res.send({ token });
     })
     .catch(next);
 };
@@ -158,15 +160,9 @@ export const getCurrentUser = (
     .select("-__v")
     .then((user) => {
       if (!user) {
-        throw Errors.notFoundRequest();
+        throw Errors.notFound(ERROR.message.NOT_FOUND_REQUEST);
       }
       res.send(user);
     })
-    .catch((err) => {
-      if (err.name === "CastError") {
-        next(Errors.invalidId());
-      } else {
-        next(err);
-      }
-    });
+    .catch(next);
 };

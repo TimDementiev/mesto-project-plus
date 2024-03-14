@@ -6,11 +6,14 @@ import { pageError, serverErorr } from "./middlewares/error";
 import { requestLogger, errorLogger } from './middlewares/logger';
 import { celebrate, Joi, errors } from 'celebrate';
 import authorization from './middlewares/auth';
-import { postUser, login } from './controllers/users';
+import { createUser, login } from './controllers/users';
+import helmet from "helmet";
 
 const app = express();
 mongoose.connect(env.MONGO_URL);
 app.use(requestLogger);
+// const helmet = require('helmet');
+app.use(helmet());
 app.use(express.json());
 
 app.post('/signin', celebrate({
@@ -28,7 +31,7 @@ app.post('/signup', celebrate({
     avatar: Joi.string().pattern(/^(http|https):\/\/[a-zA-Z0-9]+([-.[a-zA-Z0-9]+)*\.[a-zA-Z]{2,5}(:[0-9]{1,5})?((\/[a-zA-Z0-9%-~]+)*)?(#[a-zA-Z0-9_%-]*)?$/),
     about: Joi.string().min(2).max(200),
   }),
-}), postUser);
+}), createUser);
 
 app.use(authorization, router);
 app.use(pageError);
