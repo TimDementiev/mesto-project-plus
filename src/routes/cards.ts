@@ -33,7 +33,7 @@ router.delete(
   "/:cardId",
   celebrate({
     params: Joi.object().keys({
-      cardId: Joi.string()
+      cardId: Joi.string().required().length(24).hex()
         .custom((value, helpers) => {
           if (!mongoose.Types.ObjectId.isValid(value)) {
             return helpers.error("any.invalid");
@@ -50,7 +50,7 @@ router.put(
   "/:cardId/likes",
   celebrate({
     params: Joi.object().keys({
-      cardId: Joi.string()
+      cardId: Joi.string().required().length(24).hex()
         .custom((value, helpers) => {
           if (!mongoose.Types.ObjectId.isValid(value)) {
             return helpers.error("any.invalid");
@@ -67,7 +67,7 @@ router.delete(
   "/:cardId/likes",
   celebrate({
     params: Joi.object().keys({
-      cardId: Joi.string()
+      cardId: Joi.string().required().length(24).hex()
         .custom((value, helpers) => {
           if (!mongoose.Types.ObjectId.isValid(value)) {
             return helpers.error("any.invalid");

@@ -17,7 +17,7 @@ router.get('/me', getCurrentUser);
 
 router.get('/:userId', celebrate({
   params: Joi.object().keys({
-    userId: Joi.string()
+    userId: Joi.string().required().length(24).hex()
       .custom((value, helpers) => {
         if (!mongoose.Types.ObjectId.isValid(value)) {
           return helpers.error('any.invalid');

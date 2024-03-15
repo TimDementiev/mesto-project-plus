@@ -16,7 +16,7 @@ const errorMessage = {
   NOT_FOUND_REQUEST: 'Карточка или пользователь не найден',
   NOT_FOUND_PAGE: 'Страница не найдена',
   CONFLICT_ERROR: 'Пользователь с такой почтой уже существует',
-  INTERNAL_SERVER_ERROR: 'Ошибка по умолчанию',
+  INTERNAL_SERVER_ERROR: 'На сервере произошла ошибка',
 };
 
 export const ERROR = {
